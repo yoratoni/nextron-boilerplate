@@ -1,27 +1,37 @@
 module.exports = {
     plugins: [
         "@typescript-eslint",
-        "import"
+        "import",
+        "react"
     ],
     extends: [
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
         "plugin:import/typescript",
+        "plugin:react/jsx-runtime"
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
         ecmaVersion: "latest",
+        ecmaFeatures: {
+            jsx: true
+        },
         sourceType: "module"
     },
     settings: {
         "import/parsers": {
-            "@typescript-eslint/parser": [".ts"]
+            "@typescript-eslint/parser": [".ts", ".tsx"]
         },
         "import/resolver": {
             "typescript": {
                 "alwaysTryTypes": true,
                 "project": "./tsconfig.json"
             }
+        },
+        "react": {
+            "version": "detect",
+            "pragma": "React",
+            "fragment": "Fragment"
         }
     },
     rules: {

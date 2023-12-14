@@ -1,56 +1,31 @@
 {
-    "name": "ts-node-boilerplate",
+    "name": "nextron-boilerplate",
     "version": "1.0.0",
-    "description": "TS-Node Boilerplate",
+    "description": "Nextron Boilerplate",
     "repository": "https://github.com/yoratoni/ts-node-boilerplate",
     "author": "yoratoni <yoratoni.dev@gmail.com>",
     "license": "MIT",
     "private": true,
-    "main": "./build/main/index.js",
+    "main": "app/background.js",
     "scripts": {
         "v-bump": "yarn version --patch",
-        "build": "tsc",
-        "watch": "tsc -w",
-        "lint": "eslint -c .eslintrc --ext .ts ./src",
-        "start": "yarn build && electron ."
+        "dev": "nextron",
+        "build": "nextron build",
+        "postinstall": "electron-builder install-app-deps"
     },
     "dependencies": {
-        "date-and-time": "^3.0.3",
-        "dedent-js": "^1.0.1",
-        "dotenv": "^16.3.1",
-        "electron": "^28.0.0",
-        "electron-reload": "^2.0.0-alpha.1",
-        "minimist": "^1.2.8",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-scripts": "^5.0.1",
-        "winston": "^3.11.0"
+        "electron-serve": "^1.1.0",
+        "electron-store": "^8.1.0"
     },
     "devDependencies": {
-        "@total-typescript/ts-reset": "^0.5.1",
-        "@types/node": "^20.8.6",
-        "@types/react": "^18.2.45",
-        "@types/react-dom": "^18.2.17",
-        "@typescript-eslint/eslint-plugin": "^6.7.5",
-        "@typescript-eslint/parser": "^6.7.5",
-        "concurrently": "^8.2.2",
-        "eslint": "^8.51.0",
-        "eslint-import-resolver-typescript": "^3.6.1",
-        "eslint-plugin-import": "^2.28.1",
-        "eslint-plugin-react": "^7.33.2",
-        "tsconfig-paths": "^4.2.0",
+        "@types/node": "^18.11.18",
+        "@types/react": "^18.0.26",
+        "electron": "^26.2.2",
+        "electron-builder": "^24.6.4",
+        "next": "^12.3.4",
+        "nextron": "^8.12.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "typescript": "^5.2.2"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
     }
 }

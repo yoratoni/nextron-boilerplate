@@ -1,23 +1,38 @@
-# TS-Node Boilerplate
-A TS-Node & EsLint boilerplate entirely configured to suit my standards.
+<p align="center"><img src="https://i.imgur.com/NZfsD1p.png"></p>
 
-Summary
--------
-You can find here a list of the main features of this boilerplate:
-- [TypeScript](https://www.typescriptlang.org/) support.
-- [TS-Node](https://github.com/TypeStrong/ts-node) support.
-- [EsLint](https://eslint.org/) support (already configured).
-- [Winston](https://github.com/winstonjs/winston) logger boilerplate.
-- [Minimist](https://github.com/minimistjs/minimist) support.
-- [Dedent-JS](https://github.com/MartinKolarik/dedent-js) support.
-- [Date-and-time](https://www.npmjs.com/package/date-and-time) support.
-- [DotEnv](https://github.com/motdotla/dotenv) support (don't forget to config load early in the app).
+## Usage
 
-Here's the list of the main EsLint rules:
-- **[ERROR]** UNIX linebreaks.
-- **[ERROR]** Required semi-colons.
-- **[WARN]** Recommended double quotes.
-- **[WARN]** Two new lines after imports.
-- **[WARN]** No unused variables.
-- **[WARN]** EsLint sorted imports (auto-sorted with VSCode).
-- **[WARN]** Prefer arrow functions.
+### Create an App
+
+```
+# with npx
+$ npx create-nextron-app my-app --example basic-lang-typescript
+
+# with yarn
+$ yarn create nextron-app my-app --example basic-lang-typescript
+
+# with pnpm
+$ pnpm dlx create-nextron-app my-app --example basic-lang-typescript
+```
+
+### Install Dependencies
+
+```
+$ cd my-app
+
+# using yarn or npm
+$ yarn (or `npm install`)
+
+# using pnpm
+$ pnpm install --shamefully-hoist
+```
+
+### Use it
+
+```
+# development mode
+$ yarn dev (or `npm run dev` or `pnpm run dev`)
+
+# production build
+$ yarn build (or `npm run build` or `pnpm run build`)
+```

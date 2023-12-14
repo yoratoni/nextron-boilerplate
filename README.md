@@ -7,6 +7,7 @@ You can find here a list of the main features of this boilerplate:
 - [TypeScript](https://www.typescriptlang.org/) support.
 - [Nextron](https://github.com/saltyshiomix/nextron) support.
 - [EsLint](https://eslint.org/) support (already configured).
+- [DotEnv](https://github.com/motdotla/dotenv) support (allow sharing between main & renderer).
 
 Here's the list of the main EsLint rules:
 - **[ERROR]** UNIX linebreaks.

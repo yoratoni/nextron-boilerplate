@@ -1,10 +1,15 @@
 import path from "path";
 
+import { config } from "dotenv";
 import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 
-import { createWindow } from "./helpers";
+import { createWindow } from "@main/helpers/createWindow";
 
+
+config({
+    path: "../.env"
+});
 
 const isProd = process.env.NODE_ENV === "production";
 

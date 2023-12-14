@@ -4,5 +4,6 @@ declare namespace NodeJS {
         [key: string]: never;
 
         // Valid env variables
+        ELECTRON_DISABLE_SECURITY_WARNINGS: "true" | "false";
     }
 }

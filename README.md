@@ -8,6 +8,7 @@ You can find here a list of the main features of this boilerplate:
 - [Nextron](https://github.com/saltyshiomix/nextron) support.
 - [EsLint](https://eslint.org/) support (already configured).
 - [DotEnv](https://github.com/motdotla/dotenv) support (allow sharing between main & renderer).
+- [TailwindCSS](https://tailwindcss.com/) support.
 
 Here's the list of the main EsLint rules:
 - **[ERROR]** UNIX linebreaks.

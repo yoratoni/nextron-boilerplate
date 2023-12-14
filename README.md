@@ -11,6 +11,7 @@ You can find here a list of the main features of this boilerplate:
 Here's the list of the main EsLint rules:
 - **[ERROR]** UNIX linebreaks.
 - **[ERROR]** Required semi-colons.
+- **[ERROR]** No comma dangle.
 - **[WARN]** Recommended double quotes.
 - **[WARN]** Two new lines after imports.
 - **[WARN]** No unused variables.

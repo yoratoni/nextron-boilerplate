@@ -4,5 +4,14 @@ module.exports = {
     swcMinify: true,
     trailingSlash: true,
     images: { unoptimized: true },
-    webpack: (config) => config
+    webpack: (config) => config,
+    async redirects() {
+        return [
+            {
+                source: "/home",
+                destination: "/",
+                permanent: true
+            }
+        ];
+    }
 };

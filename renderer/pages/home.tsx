@@ -19,7 +19,7 @@ export default function HomePage() {
                 <title>Home - Nextron (basic-lang-typescript)</title>
             </Head>
             <div>
-                <p>
+                <p className="text-3xl">
                     ⚡ Electron + Next.js ⚡ -
                     <Link href="/next">
                         <a>Go to next page</a>

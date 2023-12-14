@@ -1,38 +1,18 @@
-<p align="center"><img src="https://i.imgur.com/NZfsD1p.png"></p>
+# Nextron Boilerplate
+A Nextron & EsLint boilerplate entirely configured to suit my standards.
 
-## Usage
+Summary
+-------
+You can find here a list of the main features of this boilerplate:
+- [TypeScript](https://www.typescriptlang.org/) support.
+- [Nextron](https://github.com/saltyshiomix/nextron) support.
+- [EsLint](https://eslint.org/) support (already configured).
 
-### Create an App
-
-```
-# with npx
-$ npx create-nextron-app my-app --example basic-lang-typescript
-
-# with yarn
-$ yarn create nextron-app my-app --example basic-lang-typescript
-
-# with pnpm
-$ pnpm dlx create-nextron-app my-app --example basic-lang-typescript
-```
-
-### Install Dependencies
-
-```
-$ cd my-app
-
-# using yarn or npm
-$ yarn (or `npm install`)
-
-# using pnpm
-$ pnpm install --shamefully-hoist
-```
-
-### Use it
-
-```
-# development mode
-$ yarn dev (or `npm run dev` or `pnpm run dev`)
-
-# production build
-$ yarn build (or `npm run build` or `pnpm run build`)
-```
+Here's the list of the main EsLint rules:
+- **[ERROR]** UNIX linebreaks.
+- **[ERROR]** Required semi-colons.
+- **[WARN]** Recommended double quotes.
+- **[WARN]** Two new lines after imports.
+- **[WARN]** No unused variables.
+- **[WARN]** EsLint sorted imports (auto-sorted with VSCode).
+- **[WARN]** Prefer arrow functions.

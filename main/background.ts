@@ -23,6 +23,7 @@ if (isProd) {
     await app.whenReady();
 
     const mainWindow = createWindow("main", {
+        title: "Nextron Boilerplate",
         width: 1000,
         height: 600,
         webPreferences: {
@@ -40,7 +41,9 @@ if (isProd) {
 })();
 
 app.on("window-all-closed", () => {
-    app.quit();
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
 });
 
 ipcMain.on("message", async (event, arg) => {

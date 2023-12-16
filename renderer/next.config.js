@@ -10,15 +10,23 @@ module.exports = {
     webpack: (config) => {
         const existingEnv = config.plugins[1].definitions;
 
-        // Parse .env file
-        const env = dotenv.config({ path: ".env" }).parsed;
-
         // Adds environment variables from .env file (shared by main and renderer processes)
         // Without overriding existing ones
         if (existingEnv?.__NEXT_DEFINE_ENV === "true") {
+            // Parse .env file
+            const env = dotenv.config({ path: ".env" }).parsed;
+
+            // Filter only those starting with "NEXT_PUBLIC_"
+            const sharedEnv = Object.keys(env)
+                .filter((key) => key.startsWith("NEXT_PUBLIC_"))
+                .reduce((obj, key) => {
+                    obj[key] = env[key];
+                    return obj;
+                }, {});
+
             config.plugins[1].definitions = {
                 ...existingEnv,
-                ...env
+                ...sharedEnv
             };
 
             console.log("Environment variables from .env file loaded");

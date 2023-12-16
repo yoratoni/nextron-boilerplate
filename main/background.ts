@@ -2,7 +2,7 @@ import path from "path";
 
 import { config } from "dotenv";
 import { app, ipcMain } from "electron";
-import serveNextAt from "next-electron-server";
+import serve from "electron-serve";
 
 import { createWindow } from "@main/helpers/createWindow";
 
@@ -13,11 +13,11 @@ config({ path: ".env" });
 // Determine whether we are running in production or development mode
 const isProd = process.env.NODE_ENV === "production";
 
-// Start the Next.js server
-serveNextAt("next://app", {
-    outputDir: "./app",
-    port: 8888
-});
+if (isProd) {
+    serve({ directory: "app" });
+} else {
+    app.setPath("userData", `${app.getPath("userData")} (development)`);
+}
 
 (async () => {
     await app.whenReady();
@@ -32,9 +32,10 @@ serveNextAt("next://app", {
     });
 
     if (isProd) {
-        await mainWindow.loadURL("next://app/home");
+        await mainWindow.loadURL("app://./home");
     } else {
-        await mainWindow.loadURL("next://app/home");
+        const port = process.argv[2];
+        await mainWindow.loadURL(`http://localhost:${port}/home`);
         mainWindow.webContents.openDevTools();
     }
 })();

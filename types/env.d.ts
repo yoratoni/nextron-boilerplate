@@ -5,6 +5,5 @@ declare namespace NodeJS {
 
         // Valid env variables
         readonly NODE_ENV: "development" | "production" | "test";
-        NEXT_ELECTRON_SERVER_PORT: string;
     }
 }

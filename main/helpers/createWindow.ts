@@ -34,8 +34,8 @@ export const createWindow = (
     let state = Object.assign({}, defaultWindow);
 
     // Create the store for the window
-    const storeName = `PersistedWindow${windowName}`;
-    const storeKey = "windowState";
+    const storeName = `${windowName} Window`;
+    const storeKey = "state";
     const store = new Store<Rectangle>({ name: storeName });
 
     /**
@@ -120,7 +120,7 @@ export const createWindow = (
         }
     });
 
-    // win.on("close", saveState);
+    win.on("close", saveState);
 
     return win;
 };

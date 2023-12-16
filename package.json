@@ -16,7 +16,9 @@
     "dependencies": {
         "dotenv": "^16.3.1",
         "electron-serve": "^1.1.0",
-        "electron-store": "^8.1.0"
+        "electron-store": "^8.1.0",
+        "next-electron-server": "^1.0.0",
+        "webpack": "^5.89.0"
     },
     "devDependencies": {
         "@total-typescript/ts-reset": "^0.5.1",

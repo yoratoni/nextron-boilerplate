@@ -1,5 +1,26 @@
-import { IpcRendererEvent, contextBridge, ipcRenderer } from "electron";
+import { IpcRendererEvent, contextBridge, ipcRenderer, webFrame } from "electron";
 
+
+// Next.js Websocket DevServer is not listening on our custom scheme.
+// This is why we need to monkey patch the global WebSocket constructor
+// to use the correct DevServer url
+// More info: https://github.com/HaNdTriX/next-electron-server/issues/7
+if (process.env.NODE_ENV === "development") {
+    webFrame.executeJavaScript(`
+        Object.defineProperty(globalThis, "WebSocket", {
+            value: new Proxy(WebSocket, {
+                    construct: (Target, [url, protocols]) => {
+                    if (url.endsWith("/_next/webpack-hmr")) {
+                        // Fix the Next.js hmr client url
+                        return new Target("ws://localhost:${process.env.NEXT_ELECTRON_SERVER_PORT || 3000}/_next/webpack-hmr", protocols)
+                    } else {
+                        return new Target(url, protocols)
+                    }
+                }
+            })
+        });
+    `);
+}
 
 const handler = {
     send(channel: string, value: unknown) {

@@ -22,10 +22,10 @@ if (isProd) {
 (async () => {
     await app.whenReady();
 
-    const mainWindow = createWindow("main", {
+    const mainWindow = createWindow("Main", {
         title: "Nextron Boilerplate",
-        width: 1000,
-        height: 800,
+        width: 1024,
+        height: 768,
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         }

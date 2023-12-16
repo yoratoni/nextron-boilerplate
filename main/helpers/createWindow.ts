@@ -18,23 +18,30 @@ export const createWindow = (
     windowName: string,
     options: BrowserWindowConstructorOptions
 ): BrowserWindow => {
-    const key = "window-state";
-    const name = `window-state-${windowName}`;
-    const store = new Store<Rectangle>({ name });
-
-    const defaultSize = {
-        x: options.x || 0,
-        y: options.y || 0,
-        width: options.width || 800,
-        height: options.height || 600
+    const defaultWindow: IsWindow = {
+        x: 0,
+        y: 0,
+        width: options.width || 1024,
+        height: options.height || 768
     };
 
-    let state: IsWindow = {
-        ...defaultSize
-    };
+    // Sets the default X and Y coordinates of the window to the center of the screen
+    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+    defaultWindow.x = (width - defaultWindow.width) / 2;
+    defaultWindow.y = (height - defaultWindow.height) / 2;
 
-    const restore = () => store.get(key, defaultSize);
+    // State defaults to the default window state
+    let state = Object.assign({}, defaultWindow);
 
+    // Create the store for the window
+    const storeName = `PersistedWindow${windowName}`;
+    const storeKey = "windowState";
+    const store = new Store<Rectangle>({ name: storeName });
+
+    /**
+     * Gets the current position of the window.
+     * @returns The current position of the window.
+     */
     const getCurrentPosition = (): IsWindow => {
         const position = win.getPosition();
         const size = win.getSize();
@@ -47,49 +54,65 @@ export const createWindow = (
         };
     };
 
+    /**
+     * Checks if the window is within the bounds of the screen.
+     * @param windowState The window state.
+     * @param bounds The bounds of the screen.
+     * @returns Whether the window is within the bounds of the screen.
+     */
     const windowWithinBounds = (windowState: IsWindow, bounds: IsWindow) => (
         windowState.x >= bounds.x &&
-            windowState.y >= bounds.y &&
-            windowState.x + windowState.width <= bounds.x + bounds.width &&
-            windowState.y + windowState.height <= bounds.y + bounds.height
+        windowState.y >= bounds.y &&
+        windowState.x + windowState.width <= bounds.x + bounds.width &&
+        windowState.y + windowState.height <= bounds.y + bounds.height
     );
 
+    /**
+     * Resets the window to the default position.
+     * @returns The default position of the window.
+     */
     const resetToDefaults = () => {
         const bounds = screen.getPrimaryDisplay().bounds;
 
-        return Object.assign({}, defaultSize, {
-            x: (bounds.width - defaultSize.width) / 2,
-            y: (bounds.height - defaultSize.height) / 2
+        return Object.assign({}, defaultWindow, {
+            x: (bounds.width - defaultWindow.width) / 2,
+            y: (bounds.height - defaultWindow.height) / 2
         });
     };
 
+    /**
+     * Ensures that the window is visible on some display.
+     * @param windowState The window state.
+     * @returns The window state.
+     */
     const ensureVisibleOnSomeDisplay = (windowState: IsWindow) => {
         const visible = screen.getAllDisplays().some((display) => windowWithinBounds(windowState, display.bounds));
 
         if (!visible) {
-            // Window is partially or fully not visible now.
-            // Reset it to safe defaults.
             return resetToDefaults();
         }
 
         return windowState;
     };
 
+    /**
+     * Saves the current state of the window.
+     */
     const saveState = () => {
         if (!win.isMinimized() && !win.isMaximized()) {
             Object.assign(state, getCurrentPosition());
         }
 
-        store.set(key, state);
+        store.set(storeKey, state);
     };
 
-    state = ensureVisibleOnSomeDisplay(restore());
-
-    console.log(restore());
+    state = ensureVisibleOnSomeDisplay(
+        store.get(storeKey, defaultWindow)
+    );
 
     const win = new BrowserWindow({
+        title: options.title,
         ...state,
-        ...options,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -97,12 +120,7 @@ export const createWindow = (
         }
     });
 
-    // Center window if x and y set to 0
-    if (state.x === 0 && state.y === 0) {
-        win.center();
-    }
-
-    win.on("close", saveState);
+    // win.on("close", saveState);
 
     return win;
 };

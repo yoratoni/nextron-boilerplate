@@ -21,13 +21,17 @@ export const createWindow = (
     const key = "window-state";
     const name = `window-state-${windowName}`;
     const store = new Store<Rectangle>({ name });
+
     const defaultSize = {
         x: options.x || 0,
         y: options.y || 0,
         width: options.width || 800,
         height: options.height || 600
     };
-    let state = {};
+
+    let state: IsWindow = {
+        ...defaultSize
+    };
 
     const restore = () => store.get(key, defaultSize);
 
@@ -75,10 +79,13 @@ export const createWindow = (
         if (!win.isMinimized() && !win.isMaximized()) {
             Object.assign(state, getCurrentPosition());
         }
+
         store.set(key, state);
     };
 
     state = ensureVisibleOnSomeDisplay(restore());
+
+    console.log(restore());
 
     const win = new BrowserWindow({
         ...state,
@@ -89,6 +96,11 @@ export const createWindow = (
             ...options.webPreferences
         }
     });
+
+    // Center window if x and y set to 0
+    if (state.x === 0 && state.y === 0) {
+        win.center();
+    }
 
     win.on("close", saveState);
 

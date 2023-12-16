@@ -25,7 +25,7 @@ if (isProd) {
     const mainWindow = createWindow("main", {
         title: "Nextron Boilerplate",
         width: 1000,
-        height: 600,
+        height: 800,
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         }

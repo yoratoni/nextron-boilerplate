@@ -6,6 +6,8 @@ import {
 } from "electron";
 import Store from "electron-store";
 
+import defaultWindowConfig from "@main/configs/window.config";
+
 
 type IsWindow = {
     x: number;
@@ -21,8 +23,8 @@ export const createWindow = (
     const defaultWindow: IsWindow = {
         x: 0,
         y: 0,
-        width: options.width || 1024,
-        height: options.height || 768
+        width: options.width || defaultWindowConfig.initialWidth,
+        height: options.height || defaultWindowConfig.initialHeight
     };
 
     // Sets the default X and Y coordinates of the window to the center of the screen
@@ -112,6 +114,8 @@ export const createWindow = (
 
     const win = new BrowserWindow({
         title: options.title,
+        minWidth: options.minWidth,
+        minHeight: options.minHeight,
         ...state,
         webPreferences: {
             nodeIntegration: false,

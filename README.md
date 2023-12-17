@@ -24,4 +24,5 @@ Notes
 -----
 - The `.env` file is shared between the main & renderer processes. To allow variables to be used in the renderer
 process, you need to prefix them with `NEXT_PUBLIC_`.
+- The default configuration of the window can be found in `main/configs/window.config.ts`.
 - You can use `types/env.d.ts` to declare your environment variable types in both the main & renderer processes.

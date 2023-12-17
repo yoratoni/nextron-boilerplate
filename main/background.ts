@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 
+import defaultWindowConfig from "@main/configs/window.config";
 import { createWindow } from "@main/helpers/createWindow";
 
 
@@ -23,9 +24,11 @@ if (isProd) {
     await app.whenReady();
 
     const mainWindow = createWindow("Main", {
-        title: "Nextron Boilerplate",
-        width: 1024,
-        height: 768,
+        title: defaultWindowConfig.title,
+        width: defaultWindowConfig.initialWidth,
+        height: defaultWindowConfig.initialHeight,
+        minWidth: defaultWindowConfig.minWidth,
+        minHeight: defaultWindowConfig.minHeight,
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         }

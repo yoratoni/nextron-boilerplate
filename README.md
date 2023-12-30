@@ -26,3 +26,4 @@ Notes
 process, you need to prefix them with `NEXT_PUBLIC_`.
 - The default configuration of the window can be found in `main/configs/window.config.ts`.
 - You can use `types/env.d.ts` to declare your environment variable types in both the main & renderer processes.
+- `child` variants has been added to TailwindCSS.

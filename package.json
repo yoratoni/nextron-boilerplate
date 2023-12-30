@@ -2,7 +2,7 @@
     "name": "nextron-boilerplate",
     "version": "1.0.0",
     "description": "Nextron Boilerplate",
-    "repository": "https://github.com/yoratoni/ts-node-boilerplate",
+    "repository": "https://github.com/yoratoni/nextron-boilerplate",
     "author": "yoratoni <yoratoni.dev@gmail.com>",
     "license": "MIT",
     "private": true,

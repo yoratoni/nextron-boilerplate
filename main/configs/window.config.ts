@@ -1,4 +1,10 @@
-export type IsWindowConfig = {
+import { appConfig } from "@main/configs/app.config";
+
+
+/**
+ * The configuration for the main app window.
+ */
+export type WindowConfig = {
     title: string;
     initialWidth: number;
     initialHeight: number;
@@ -6,12 +12,15 @@ export type IsWindowConfig = {
     minHeight?: number;
 };
 
-const defaultWindowConfig: IsWindowConfig = {
-    title: "Nextron Boilerplate",
+/**
+ * The default configuration for the main app window.
+ */
+const defaultWindowConfig: WindowConfig = {
+    title: appConfig.name,
     initialWidth: 1024,
     initialHeight: 768,
-    minWidth: 800,
-    minHeight: 600
+    minWidth: 1024,
+    minHeight: 768
 };
 
 export default defaultWindowConfig;

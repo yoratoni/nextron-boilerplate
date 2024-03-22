@@ -1,20 +1,15 @@
 import path from "path";
 
-import { config } from "dotenv";
+
 import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 
+import ipcRouter from "@main/api/routes";
 import defaultWindowConfig from "@main/configs/window.config";
-import { createWindow } from "@main/helpers/createWindow";
+import { createWindow } from "@main/lib/helpers/createWindow";
 
 
-// Load environment variables from .env file (shared between main and renderer processes)
-config({ path: ".env" });
-
-// Determine whether we are running in production or development mode
-const isProd = process.env.NODE_ENV === "production";
-
-if (isProd) {
+if (app.isPackaged) {
     serve({ directory: "app" });
 } else {
     app.setPath("userData", `${app.getPath("userData")} (development)`);
@@ -23,23 +18,27 @@ if (isProd) {
 (async () => {
     await app.whenReady();
 
-    const mainWindow = createWindow("Main", {
+    const mainWindow = createWindow("main", {
         title: defaultWindowConfig.title,
         width: defaultWindowConfig.initialWidth,
         height: defaultWindowConfig.initialHeight,
         minWidth: defaultWindowConfig.minWidth,
         minHeight: defaultWindowConfig.minHeight,
+        icon: path.join(__dirname, "..", "assets", "favicon.ico"),
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         }
     });
 
-    if (isProd) {
+    // Disable the default menu bar
+    mainWindow.setMenuBarVisibility(false);
+
+    // Load the application
+    if (app.isPackaged) {
         await mainWindow.loadURL("app://./home");
     } else {
         const port = process.argv[2];
         await mainWindow.loadURL(`http://localhost:${port}/home`);
-        mainWindow.webContents.openDevTools();
     }
 })();
 
@@ -49,6 +48,4 @@ app.on("window-all-closed", () => {
     }
 });
 
-ipcMain.on("message", async (event, arg) => {
-    event.reply("message", `${arg} World!`);
-});
+ipcMain.handle("ipc::router", ipcRouter);

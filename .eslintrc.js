@@ -27,7 +27,10 @@ module.exports = {
         "import/resolver": {
             "typescript": {
                 "alwaysTryTypes": true,
-                "project": "./tsconfig.json"
+                "project": [
+                    "./tsconfig.json",
+                    "./renderer/tsconfig.json"
+                ]
             }
         },
         "next": {
@@ -50,6 +53,7 @@ module.exports = {
         "@typescript-eslint/indent": ["warn", 4, { "SwitchCase": 1 }],
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "off",
 
         // Next.js
         "@next/next/no-img-element": "warn",

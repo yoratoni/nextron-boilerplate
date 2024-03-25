@@ -5,9 +5,9 @@ Summary
 -------
 This boilerplate integrates:
 - [EsLint](https://eslint.org/) - It is highly configured to suit how I write code, but you can change it to your liking.
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Iconify](https://iconify.design/)
-- [systeminformation](https://systeminformation.io/)
+- [Tailwind CSS](https://tailwindcss.com/) support.
+- [Iconify](https://iconify.design/) support.
+- [systeminformation](https://systeminformation.io/) support.
 - Roboto Mono as a preset font so you don't have to configure Next.js with Tailwind CSS,
   just to change the font in `./renderer/lib/fonts/index.ts` if needed.
 - Example IPC routes:

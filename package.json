@@ -12,7 +12,8 @@
         "dev": "nextron",
         "build": "nextron build --config ./configs/electron-builder.yml",
         "postinstall": "electron-builder install-app-deps",
-        "lint": "eslint . --ext .ts,.tsx"
+        "lint": "eslint . --ext .ts,.tsx",
+         "check-types": "tsc --noEmit --skipLibCheck --incremental false"
     },
     "dependencies": {
         "electron-serve": "^1.1.0",

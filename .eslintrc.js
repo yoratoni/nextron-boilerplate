@@ -7,7 +7,8 @@ module.exports = {
         "next/core-web-vitals",
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
-        "plugin:import/typescript"
+        "plugin:import/typescript",
+        "plugin:react/recommended"
     ],
     parser: "@typescript-eslint/parser",
     env: {
@@ -62,9 +63,17 @@ module.exports = {
         "@next/next/no-title-in-document-head": "warn",
         "@next/next/no-html-link-for-pages": ["error", "renderer/pages"],
 
+        // React
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-uses-react": "off",
+        "react/button-has-type": "warn",
+        "react/jsx-indent": ["warn", 4],
+        "react/jsx-indent-props": ["warn", 4],
+        "react/jsx-one-expression-per-line": "off",
+        
         // Imports
         "import/no-useless-path-segments": ["warn", { noUselessIndex: true }],
-        "import/newline-after-import": ["warn", { count: 2 }],
+        "import/newline-after-import": ["warn", { count: 2, considerComments: true }],
         "sort-imports": [
             "warn",
             {

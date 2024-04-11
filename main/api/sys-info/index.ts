@@ -1,15 +1,16 @@
 import { currentLoad, mem } from "systeminformation";
 
-import { ERRORS } from "@main/lib/errors";
+import ERRORS from "@main/lib/utils/errors";
 import { MemoryMap } from "@main/lib/utils/units";
-import { IpcResponse, ParsedIpcRequest, SHR__SysInfo } from "@sharedTypes/shared";
+import type { SysInfo } from "@sharedTypes/api";
+import type { IpcResponse, ParsedIpcRequest } from "@sharedTypes/ipc";
 
 
 /**
- * `GET` /api/sysinfo route handler.
+ * `GET` `/api/sys-info` route handler.
  * @returns The system information.
  */
-async function getSysInfo(): Promise<SHR__SysInfo> {
+async function get(): Promise<IpcResponse> {
     const sysCPU = await currentLoad();
     const sysMemory = await mem();
     const sysMemoryAvailableGB = sysMemory.available / MemoryMap.GB;
@@ -17,7 +18,7 @@ async function getSysInfo(): Promise<SHR__SysInfo> {
     const sysMemoryTotalGB = sysMemory.total / MemoryMap.GB;
     const sysMemoryPercentage = (sysMemoryUsedGB / sysMemoryTotalGB) * 100;
 
-    const data: SHR__SysInfo = {
+    const data: SysInfo = {
         cpu: {
             percentage: (100 - sysCPU.currentLoadIdle).toFixed(2),
             str: `${(100 - sysCPU.currentLoadIdle).toFixed(2)}%`
@@ -31,26 +32,24 @@ async function getSysInfo(): Promise<SHR__SysInfo> {
         }
     };
 
-    return data;
+    return {
+        success: true,
+        message: "Successfully retrieved system information.",
+        data: data
+    };
 }
 
 /**
- * Handler for the `/api/sysinfo` route.
+ * Handler for the `/api/sys-info` route.
+ * @param req The parsed ipc request.
+ * @returns The ipc response.
  */
 export default async function handler(req: ParsedIpcRequest): Promise<IpcResponse> {
-    if (req.method === "GET") {
-        const data = await getSysInfo();
-
-        return {
-            success: true,
-            message: "Successfully retrieved system information.",
-            data: data
-        };
-    }
+    if (req.method === "GET") return await get();
 
     return {
         success: false,
-        message: "This route only supports GET requests.",
+        message: "This route only supports 'GET' requests.",
         data: ERRORS.METHOD_NOT_ALLOWED
     };
 }

@@ -1,42 +1,45 @@
-# archives
+# Archives
 /archives
 
 # IDE
-settings.json
-.vscode
+/.vscode
 
-# dependencies
+# Dependencies
 /node_modules
 
-# testing
+# Testing
 /coverage
 
-# next.js
+# Next.js
 **/.next/
 /out/
 
-# production
+# Production
 /build
 /dist
 /app
 
-# misc
-.DS_Store
-*.pem
-
-*.bak
-
-# debug
+# Debug / logs
 *.log
 
-# vercel
-.vercel
-
-# typescript
+# Typescript
 *.tsbuildinfo
 
-# env
+# Secrets
 .env
+.env.local
+.env.production.local
+.env.development.local
 
-# local env files
-.env*.local
+# Build tools specific
+npm-debug.log
+yarn-error.log
+
+# Editors specific
+.fleet
+.idea
+.vscode
+
+# Platform specific
+.DS_Store
+*.pem

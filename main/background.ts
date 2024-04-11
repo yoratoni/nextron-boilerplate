@@ -1,51 +1,43 @@
-import path from "path";
-
-
+import type { BrowserWindow } from "electron";
 import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 
 import ipcRouter from "@main/api/routes";
-import defaultWindowConfig from "@main/configs/window.config";
-import { createWindow } from "@main/lib/helpers/createWindow";
+import createWindow from "@main/lib/helpers/createWindow";
+import StorageService from "@main/lib/helpers/storageService";
 
 
-if (app.isPackaged) {
-    serve({ directory: "app" });
-} else {
-    app.setPath("userData", `${app.getPath("userData")} (development)`);
-}
+// Storage location
+if (app.isPackaged) serve({ directory: "app" });
+else app.setPath("userData", `${app.getPath("userData")} (development)`);
 
-(async () => {
-    await app.whenReady();
+// Initialize storage
+const storage = new StorageService();
 
-    const mainWindow = createWindow("main", {
-        title: defaultWindowConfig.title,
-        width: defaultWindowConfig.initialWidth,
-        height: defaultWindowConfig.initialHeight,
-        minWidth: defaultWindowConfig.minWidth,
-        minHeight: defaultWindowConfig.minHeight,
-        icon: path.join(__dirname, "..", "assets", "favicon.ico"),
-        webPreferences: {
-            preload: path.join(__dirname, "preload.js")
-        }
-    });
+// Window
+let mainWindow: BrowserWindow;
 
-    // Disable the default menu bar
-    mainWindow.setMenuBarVisibility(false);
+// Lifecycle
+app.on("ready", async () => {
+    mainWindow = await createWindow(storage, "main", false);
 
-    // Load the application
+    // Load the app
     if (app.isPackaged) {
         await mainWindow.loadURL("app://./home");
     } else {
         const port = process.argv[2];
         await mainWindow.loadURL(`http://localhost:${port}/home`);
     }
-})();
 
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+    // Show by default
+    mainWindow.show();
 });
 
+// IPC routing
 ipcMain.handle("ipc::router", ipcRouter);
+
+// Make initialized storage and window instances available globally
+export {
+    storage,
+    mainWindow
+};

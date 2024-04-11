@@ -1,14 +1,7 @@
-export type ErrorCode = {
-    status: number,    // HTTP Status Code
-    code: string,      // Error Code (status + variant)
-    log: string,       // Log message
-    data: any;         // Additional data
-};
-
 /**
- * Error codes for the application.
+ * Error codes for the app.
  */
-export const ERRORS = {
+const ERRORS = {
     /** [400] Bad Request */
     BAD_REQUEST: {
         status: 400,
@@ -44,6 +37,20 @@ export const ERRORS = {
         log: "Method Not Allowed",
         data: null
     },
+    /** [422] Unprocessable Entity */
+    UNPROCESSABLE_ENTITY: {
+        status: 422,
+        code: "422_UNPROCESSABLE_ENTITY",
+        log: "Unprocessable Entity",
+        data: null
+    },
+    /** [422] Invalid Path*/
+    INVALID_PATH: {
+        status: 422,
+        code: "INVALID_PATH",
+        log: "Invalid path",
+        data: null
+    },
     /** [500] Internal Server Error */
     INTERNAL_SERVER_ERROR: {
         status: 500,
@@ -52,3 +59,5 @@ export const ERRORS = {
         data: null
     }
 };
+
+export default ERRORS;

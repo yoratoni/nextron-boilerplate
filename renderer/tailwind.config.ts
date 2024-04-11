@@ -8,7 +8,11 @@ module.exports = {
         "./renderer/components/**/*.{js,ts,jsx,tsx}"
     ],
     theme: {
-        extend: {}
+        extend: {
+            fontFamily: {
+                "roboto-mono": ["var(--font-roboto-mono)"]
+            }
+        }
     },
     plugins: [
         require("tailwindcss-animate"),

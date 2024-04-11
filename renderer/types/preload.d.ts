@@ -1,4 +1,4 @@
-import { IpcBridge } from "@main/preload";
+import type { IpcBridge } from "@main/preload";
 
 
 declare global {

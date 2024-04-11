@@ -1,6 +1,15 @@
 type Params = { [key: string]: any; };
 
 /**
+ * Removes all query parameters from a URL.
+ * @param url The URL to remove query parameters from.
+ * @returns The URL without query parameters.
+ */
+export function removeQueryFromUrl(url: string): string {
+    return url.split("?")[0];
+}
+
+/**
  * Remove the API route from the first query parameter of the URL.
  * @param params The query parameters.
  * @returns The query parameters without the API route.

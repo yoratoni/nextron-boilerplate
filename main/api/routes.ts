@@ -1,11 +1,12 @@
-import { IpcMainInvokeEvent } from "electron";
+import type { IpcMainInvokeEvent } from "electron";
 
-import apiAppInfoHandler from "@main/api/app-info";
+import apiEnvironmentHandler from "@main/api/environment";
+import apiPreferencesHandler from "@main/api/preferences";
 import apiSysInfoHandler from "@main/api/sys-info";
-import { ERRORS } from "@main/lib/errors";
-import { parseQueryFromUrl } from "@main/lib/utils/api";
-
-import { IpcRequest, IpcResponse, ParsedIpcRequest } from "../../types/shared";
+import { parseQueryFromUrl, removeQueryFromUrl } from "@main/lib/utils/api";
+import ERRORS from "@main/lib/utils/errors";
+import logger from "@main/lib/utils/logger";
+import type { IpcRequest, IpcResponse, ParsedIpcRequest } from "@sharedTypes/ipc";
 
 
 /**
@@ -21,27 +22,35 @@ export default async function ipcRouter(
 ): Promise<IpcResponse> {
     event.preventDefault();
 
+    // Removes all query parameters from the URL.
+    const url = removeQueryFromUrl(req.url);
+
     // Parse the ipc request, making it easier to work with in the handlers.
     // ex: `req.options?.url` query parameters goes into `req.query`
     // ex: `req.options?.body` becomes `req.body`
     // etc..
     const parsedIpcRequest: ParsedIpcRequest = {
-        url: req.url,
+        url: url,
         method: req.options?.method || "GET",
         headers: req.options?.headers || {},
         query: parseQueryFromUrl(req.url),
-        body: req.options?.body
+        body: req.options?.body,
+        silent: req.options?.silent || false
     };
 
     let res: IpcResponse;
 
-    switch (req.url) {
-        case "/api/app-info": {
-            res = await apiAppInfoHandler(parsedIpcRequest);
+    switch (url) {
+        case "/api/environment": {
+            res = await apiEnvironmentHandler(parsedIpcRequest);
             break;
         }
         case "/api/sys-info": {
             res = await apiSysInfoHandler(parsedIpcRequest);
+            break;
+        }
+        case "/api/preferences": {
+            res = await apiPreferencesHandler(parsedIpcRequest);
             break;
         }
         default: {
@@ -51,6 +60,10 @@ export default async function ipcRouter(
                 data: ERRORS.NOT_FOUND
             };
         }
+    }
+
+    if (!parsedIpcRequest.silent) {
+        logger.info(`IPC request sent to '${req.url}': ${JSON.stringify(res.data, null, 4)}`);
     }
 
     return res;

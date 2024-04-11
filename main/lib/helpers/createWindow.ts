@@ -1,130 +1,130 @@
+import path from "path";
+
+import type {
+    BrowserWindowConstructorOptions } from "electron";
 import {
     BrowserWindow,
-    BrowserWindowConstructorOptions,
-    Rectangle,
     screen
 } from "electron";
-import Store from "electron-store";
 
-import defaultWindowConfig from "@main/configs/window.config";
+import { getEnvironment } from "@main/api/environment";
+import type StorageService from "@main/lib/helpers/storageService";
+import type { Storage } from "@sharedTypes/storage";
 
 
-type IsWindow = {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-};
-
-export const createWindow = (
+/**
+ * Create a BrowserWindow instance with stored dimensions and coordinates.
+ * @param storeName The name of the store.
+ * @param windowName The name of the window.
+ * @param isSplash Whether the window is a splash screen or not (prevent moving, resizing, etc.).
+ * @param preloadScriptPath The path to the preload script.
+ * @returns The BrowserWindow instance.
+ */
+export default async function createWindow(
+    storage: StorageService,
     windowName: string,
-    options: BrowserWindowConstructorOptions
-): BrowserWindow => {
-    const defaultWindow: IsWindow = {
-        x: 0,
-        y: 0,
-        width: options.width || defaultWindowConfig.initialWidth,
-        height: options.height || defaultWindowConfig.initialHeight
-    };
+    isSplash: boolean
+) {
+    const windowsStorage = storage.get("windowStorage") as Storage["windowsStorage"] || {};
+    const windowStorage = windowsStorage[windowName] || {};
 
-    // Sets the default X and Y coordinates of the window to the center of the screen
-    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-    defaultWindow.x = (width - defaultWindow.width) / 2;
-    defaultWindow.y = (height - defaultWindow.height) / 2;
+    const preferences = storage.get("preferences") as Storage["preferences"];
 
-    // State defaults to the default window state
-    let state = Object.assign({}, defaultWindow);
+    if (!preferences.window.restoreCoordinates ||
+        Object.keys(windowStorage).length === 0 ||
+        !windowStorage.initialized
+    ) {
+        const primaryDisplay = screen.getPrimaryDisplay();
 
-    // Create the store for the window
-    const storeName = `${windowName} Window`;
-    const storeKey = "state";
-    const store = new Store<Rectangle>({ name: storeName });
+        let width: number;
+        if (isSplash) width = Math.round(primaryDisplay.workAreaSize.width / 4);
+        else width = Math.round(primaryDisplay.workAreaSize.width / 2);
+        const height = Math.round((width / 16) * 9);
 
-    /**
-     * Gets the current position of the window.
-     * @returns The current position of the window.
-     */
-    const getCurrentPosition = (): IsWindow => {
-        const position = win.getPosition();
-        const size = win.getSize();
+        windowStorage.initialized = true;
+        windowStorage.monitor = primaryDisplay.label;
+        windowStorage.x = (primaryDisplay.workArea.width - width) / 2;
+        windowStorage.y = (primaryDisplay.workArea.height - height) / 2;
+        windowStorage.width = width;
+        windowStorage.height = height;
+        windowStorage.maximized = false;
+    }
 
-        return {
-            x: position[0],
-            y: position[1],
-            width: size[0],
-            height: size[1]
-        };
-    };
+    // Environment API
+    const environment = await getEnvironment();
 
-    /**
-     * Checks if the window is within the bounds of the screen.
-     * @param windowState The window state.
-     * @param bounds The bounds of the screen.
-     * @returns Whether the window is within the bounds of the screen.
-     */
-    const windowWithinBounds = (windowState: IsWindow, bounds: IsWindow) => (
-        windowState.x >= bounds.x &&
-        windowState.y >= bounds.y &&
-        windowState.x + windowState.width <= bounds.x + bounds.width &&
-        windowState.y + windowState.height <= bounds.y + bounds.height
-    );
-
-    /**
-     * Resets the window to the default position.
-     * @returns The default position of the window.
-     */
-    const resetToDefaults = () => {
-        const bounds = screen.getPrimaryDisplay().bounds;
-
-        return Object.assign({}, defaultWindow, {
-            x: (bounds.width - defaultWindow.width) / 2,
-            y: (bounds.height - defaultWindow.height) / 2
-        });
-    };
-
-    /**
-     * Ensures that the window is visible on some display.
-     * @param windowState The window state.
-     * @returns The window state.
-     */
-    const ensureVisibleOnSomeDisplay = (windowState: IsWindow) => {
-        const visible = screen.getAllDisplays().some((display) => windowWithinBounds(windowState, display.bounds));
-
-        if (!visible) {
-            return resetToDefaults();
-        }
-
-        return windowState;
-    };
-
-    /**
-     * Saves the current state of the window.
-     */
-    const saveState = () => {
-        if (!win.isMinimized() && !win.isMaximized()) {
-            Object.assign(state, getCurrentPosition());
-        }
-
-        store.set(storeKey, state);
-    };
-
-    state = ensureVisibleOnSomeDisplay(
-        store.get(storeKey, defaultWindow)
-    );
-
-    const win = new BrowserWindow({
-        title: options.title,
-        minWidth: options.minWidth,
-        minHeight: options.minHeight,
-        ...state,
+    const options: BrowserWindowConstructorOptions = {
+        title: environment.appName,
+        x: windowStorage.x as number,
+        y: windowStorage.y as number,
+        width: windowStorage.width as number,
+        height: windowStorage.height as number,
+        minWidth: 1024,
+        minHeight: 768,
+        show: false,
+        frame: !isSplash,
+        movable: !isSplash,
+        resizable: !isSplash,
+        alwaysOnTop: false,
         webPreferences: {
-            nodeIntegration: false,
+            nodeIntegration: true,
             contextIsolation: true,
-            ...options.webPreferences
+            preload: path.join(__dirname, "preload.js")
+        }
+    };
+
+    // Fixes an issue with the window resizing itself when moved if resizable is set to false
+    // https://github.com/electron/electron/issues/13043
+    if (isSplash) {
+        options.minWidth = windowStorage.width as number;
+        options.minHeight = windowStorage.height as number;
+    }
+
+    const win = new BrowserWindow(options);
+
+    // Hide the menu bar
+    win.setMenuBarVisibility(false);
+
+    win.once("show", () => {
+        // Focus the window when it's shown
+        win.focus();
+
+        if (!isSplash &&
+            (preferences.window.startMaximized ||
+                (preferences.window.restoreCoordinates && windowStorage.maximized)
+            )
+        ) {
+            win.maximize();
         }
     });
 
-    win.on("close", saveState);
+    win.on("move", () => {
+        // Prevent maximized windows from triggering the move event
+        if (win.isMaximized()) return;
+
+        const bounds = win.getBounds();
+        windowStorage.x = bounds.x;
+        windowStorage.y = bounds.y;
+        windowStorage.monitor = screen.getDisplayMatching(bounds).label;
+    });
+
+    win.on("resize", () => {
+        const bounds = win.getBounds();
+        windowStorage.width = bounds.width;
+        windowStorage.height = bounds.height;
+    });
+
+    win.on("maximize", () => windowStorage.maximized = true);
+    win.on("unmaximize", () => windowStorage.maximized = false);
+
+    win.on("close", () => {
+        if (!isSplash && preferences.window.restoreCoordinates) {
+            storage.set("windowStorage", {
+                ...windowsStorage,
+                [windowName]: windowStorage
+            });
+        }
+    });
 
     return win;
-};
+}

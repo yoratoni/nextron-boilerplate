@@ -51,6 +51,7 @@ module.exports = {
         "comma-dangle": ["error", "never"],
 
         // TypeScript
+        "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/indent": ["warn", 4, { "SwitchCase": 1 }],
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-unused-vars": "warn",
@@ -70,10 +71,14 @@ module.exports = {
         "react/jsx-indent": ["warn", 4],
         "react/jsx-indent-props": ["warn", 4],
         "react/jsx-one-expression-per-line": "off",
-        
+
         // Imports
         "import/no-useless-path-segments": ["warn", { noUselessIndex: true }],
-        "import/newline-after-import": ["warn", { count: 2, considerComments: true }],
+        "import/newline-after-import": ["warn", {
+            count: 2,
+            considerComments: true,
+            exactCount: true
+        }],
         "sort-imports": [
             "warn",
             {

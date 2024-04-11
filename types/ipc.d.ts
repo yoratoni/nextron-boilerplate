@@ -3,11 +3,13 @@
  * @param method The method to use (optional, defaults to `GET`).
  * @param headers The headers of the request (optional, defaults to `{}`).
  * @param body The body of the request (optional, defaults to `{}`).
+ * @param silent Whether to suppress the backend log or not (optional, defaults to `false`).
  */
 export type IpcRequestOptions = {
-    method: "GET" | "POST" | "PATCH" | "DELETE";
+    method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
     headers?: object;
     body?: object;
+    silent?: boolean;
 }
 
 /**
@@ -27,13 +29,15 @@ export type IpcRequest =  {
  * @param headers The headers of the request (optional, defaults to `{}`).
  * @param query The query of the request (optional, defaults to `{}`).
  * @param body The body of the request (optional, defaults to `{}`).
+ * @param silent Whether to suppress the backend log or not (optional, defaults to `false`).
  */
 export type ParsedIpcRequest = {
     url: string;
-    method: "GET" | "POST" | "PATCH" | "DELETE";
+    method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
     headers?: object;
     query?: object;
     body?: object;
+    silent?: boolean;
 }
 
 /**
@@ -46,36 +50,4 @@ export type IpcResponse = {
     success: boolean;
     message: string;
     data: object | null;
-}
-
-/**
- * ====================
- *   API SHARED TYPES
- * ====================
- */
-
-/**
- * Info returned by the `/api/app-info` route.
- */
-export type SHR__AppInfo = {
-    name: string;
-    version: string;
-    environment: "development" | "production";
-}
-
-/**
- * System information returned by the `/api/sys-info` route.
- */
-export type SHR__SysInfo = {
-    cpu: {
-        percentage: string;
-        str: string;
-    },
-    memory: {
-        available: string;
-        used: string;
-        total: string;
-        percentage: string;
-        str: string;
-    };
 }

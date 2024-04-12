@@ -8,14 +8,17 @@ This boilerplate integrates:
 - [Tailwind CSS](https://tailwindcss.com/) support.
 - [Iconify](https://iconify.design/) support.
 - [systeminformation](https://systeminformation.io/) support.
+- [TypeScript](https://www.typescriptlang.org/) support.
+- [Winston](https://github.com/winstonjs/winston) support.
 - Roboto Mono as a preset font so you don't have to configure Next.js with Tailwind CSS,
   just to change the font in `./renderer/lib/fonts/index.ts` if needed.
 - Example IPC routes:
-    - `/api/app-info` - Returns the application information.
+    - `/api/environment` - Returns the application environment (paths etc..).
+    - `/api/preferences` - Returns a local storage of the user preferences.
     - `/api/sys-info` - Returns the CPU and memory usage.
 - Hooks:
     - `useInterval` - A custom hook for setting a loop with an interval in the frontend.
-    - `useMousePosition` - A custom hook for tracking the mouse position in the frontend.
+    - `useMouseCoordinates` - A custom hook for tracking the mouse coordinates in the frontend.
 
 It also integrates an IPC protocol with standardized error codes and shared types
 between the main and renderer processes.
@@ -42,7 +45,7 @@ async function ipcBridge(
 ```
 
 The `ipcBridge()` function treats the request, then use the `ipc::router` channel
-to send the request to the main process where the `ipcRouter` function will decide
+to send the request to the main process where the `ipcRouter()` function will decide
 via the `url` parameter which route to take.
 ```typescript
 // main/api/routes.ts
@@ -63,7 +66,7 @@ export default async function ipcRouter(
 The `ipcRouter()` function parses the potential queries from the url and converts the request
 into a standardized format similar to a REST API request:
 ```typescript
-// types/shared.d.ts
+// types/ipc.d.ts
 
 /**
  * Parsed ipc request with mandatory options merged with url.
@@ -72,13 +75,15 @@ into a standardized format similar to a REST API request:
  * @param headers The headers of the request (optional, defaults to `{}`).
  * @param query The query of the request (optional, defaults to `{}`).
  * @param body The body of the request (optional, defaults to `{}`).
+ * @param silent Whether to suppress the backend log or not (optional, defaults to `false`).
  */
 export type ParsedIpcRequest = {
     url: string;
-    method: "GET" | "POST" | "PATCH" | "DELETE";
+    method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
     headers?: object;
     query?: object;
     body?: object;
+    silent?: boolean;
 }
 ```
 
@@ -89,8 +94,8 @@ Or returns a standard 404 error if the route is not found.
 // main/api/routes.ts
 
 switch (req.url) {
-    case "/api/app-info": {
-        res = await apiAppInfoHandler(parsedIpcRequest);
+    case "/api/environment": {
+        res = await apiEnvironmentHandler(parsedIpcRequest);
         break;
     }
     default: {
@@ -103,39 +108,55 @@ switch (req.url) {
 }
 ```
 
-In this example, the `apiAppInfoHandler()` function is called with the parsed request and returns
+In this example, the `apiEnvironmentHandler()` function is called with the parsed request and returns
 a response with the data or an error message.
 ```typescript
-// main/api/app-info/index.ts
+// main/api/environment/index.ts
 
 /**
- * `GET` /api/app-info route handler.
- * @returns The info of the application.
+ * `GET` `/api/environment` route handler.
+ * @returns The app environment.
  */
-async function getAppInfo() {
-    return ({
-        ...appConfig,
-        applicationPath: __dirname
-    });
+async function get(): Promise<IpcResponse> {
+    const appPath = app.getAppPath();
+    const iconPath = path.join(appPath, "..", "assets", "favicon.ico");
+
+    const data: Environment = {
+        env: app.isPackaged ? "production" : "development",
+        appName: app.getName(),
+        appStage: "pre-alpha",
+        appVersion: app.getVersion(),
+        appIcon: iconPath,
+        appPath: app.getAppPath()
+    };
+
+    return {
+        success: true,
+        message: "Successfully retrieved environment.",
+        data: data
+    };
 }
 
 /**
- * Handler for the /api/app-info route.
+ * Backend endpoint to get the app environment.
+ * @returns The environment.
+ */
+export async function getEnvironment(): Promise<Environment> {
+    const response = await get();
+    return response.data as Environment;
+}
+
+/**
+ * Handler for the `/api/environment` route.
+ * @param req The parsed ipc request.
+ * @returns The ipc response.
  */
 export default async function handler(req: ParsedIpcRequest): Promise<IpcResponse> {
-    if (req.method === "GET") {
-        const data = await getAppInfo();
-
-        return {
-            success: true,
-            message: "Successfully retrieved application information.",
-            data: data
-        };
-    }
+    if (req.method === "GET") return await get();
 
     return {
         success: false,
-        message: "This route only supports GET requests.",
+        message: "This route only supports 'GET' requests.",
         data: ERRORS.METHOD_NOT_ALLOWED
     };
 }

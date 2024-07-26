@@ -1,5 +1,5 @@
 # Nextron Boilerplate
-A Nextron boilerplate with Next.js v14, Electron v26 and TypeScript.
+A Nextron boilerplate with Next.js v14, Electron and TypeScript.
 
 Summary
 -------

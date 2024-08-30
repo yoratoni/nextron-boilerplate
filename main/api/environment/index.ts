@@ -1,34 +1,34 @@
-import path from "path";
+import path from "node:path"
 
-import { app } from "electron";
+import { app } from "electron"
 
-import ERRORS from "@main/lib/utils/errors";
-import type { Environment } from "@sharedTypes/api";
-import type { IpcResponse, ParsedIpcRequest } from "@sharedTypes/ipc";
-
+import ERRORS from "@main/lib/utils/errors"
+import type { Environment } from "@sharedTypes/api"
+import type { IpcResponse, ParsedIpcRequest } from "@sharedTypes/ipc"
 
 /**
  * `GET` `/api/environment` route handler.
  * @returns The app environment.
  */
+// biome-ignore lint/suspicious/useAwait: An IPC function must be async.
 async function get(): Promise<IpcResponse> {
-    const appPath = app.getAppPath();
-    const iconPath = path.join(appPath, "..", "assets", "favicon.ico");
+	const appPath = app.getAppPath()
+	const iconPath = path.join(appPath, "..", "assets", "favicon.ico")
 
-    const data: Environment = {
-        env: app.isPackaged ? "production" : "development",
-        appName: app.getName(),
-        appStage: "pre-alpha",
-        appVersion: app.getVersion(),
-        appIcon: iconPath,
-        appPath: app.getAppPath()
-    };
+	const data: Environment = {
+		env: app.isPackaged ? "production" : "development",
+		appName: app.getName(),
+		appStage: "pre-alpha",
+		appVersion: app.getVersion(),
+		appIcon: iconPath,
+		appPath: app.getAppPath(),
+	}
 
-    return {
-        success: true,
-        message: "Successfully retrieved environment.",
-        data: data
-    };
+	return {
+		success: true,
+		message: "Successfully retrieved environment.",
+		data: data,
+	}
 }
 
 /**
@@ -36,8 +36,8 @@ async function get(): Promise<IpcResponse> {
  * @returns The environment.
  */
 export async function getEnvironment(): Promise<Environment> {
-    const response = await get();
-    return response.data as Environment;
+	const response = await get()
+	return response.data as Environment
 }
 
 /**
@@ -46,11 +46,11 @@ export async function getEnvironment(): Promise<Environment> {
  * @returns The ipc response.
  */
 export default async function handler(req: ParsedIpcRequest): Promise<IpcResponse> {
-    if (req.method === "GET") return await get();
+	if (req.method === "GET") return await get()
 
-    return {
-        success: false,
-        message: "This route only supports 'GET' requests.",
-        data: ERRORS.METHOD_NOT_ALLOWED
-    };
+	return {
+		success: false,
+		message: "This route only supports 'GET' requests.",
+		data: ERRORS.METHOD_NOT_ALLOWED,
+	}
 }

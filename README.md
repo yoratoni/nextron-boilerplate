@@ -4,7 +4,9 @@ A Nextron boilerplate with Next.js v14, Electron and TypeScript.
 Summary
 -------
 This boilerplate integrates:
-- [EsLint](https://eslint.org/) - It is highly configured to suit how I write code, but you can change it to your liking.
+- [Electron](https://www.electronjs.org/) support.
+- [Next.js](https://nextjs.org/) v14 support.
+- [BiomeJS](https://biomejs.dev/) support.
 - [Tailwind CSS](https://tailwindcss.com/) support.
 - [Iconify](https://iconify.design/) support.
 - [systeminformation](https://systeminformation.io/) support.

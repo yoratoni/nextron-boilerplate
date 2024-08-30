@@ -6,10 +6,10 @@
  * @param silent Whether to suppress the backend log or not (optional, defaults to `false`).
  */
 export type IpcRequestOptions = {
-    method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
-    headers?: object;
-    body?: object;
-    silent?: boolean;
+	method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT"
+	headers?: object
+	body?: object
+	silent?: boolean
 }
 
 /**
@@ -17,9 +17,9 @@ export type IpcRequestOptions = {
  * @param url The ipc route url.
  * @param options The options to pass to the ipc bridge (optional, see `IpcRequestOptions` for default values).
  */
-export type IpcRequest =  {
-    url: string;
-    options?: IpcRequestOptions;
+export type IpcRequest = {
+	url: string
+	options?: IpcRequestOptions
 }
 
 /**
@@ -32,12 +32,12 @@ export type IpcRequest =  {
  * @param silent Whether to suppress the backend log or not (optional, defaults to `false`).
  */
 export type ParsedIpcRequest = {
-    url: string;
-    method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
-    headers?: object;
-    query?: object;
-    body?: object;
-    silent?: boolean;
+	url: string
+	method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT"
+	headers?: object
+	query?: object
+	body?: object
+	silent?: boolean
 }
 
 /**
@@ -47,7 +47,13 @@ export type ParsedIpcRequest = {
  * @param data The data of the response.
  */
 export type IpcResponse = {
-    success: boolean;
-    message: string;
-    data: object | null;
+	success: boolean
+	message: string
+	data: object | null
 }
+
+/**
+ * An allowed `any` for IPC-related functions.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: This is an allowed `any` for IPC-related functions.
+export type IpcAny = any

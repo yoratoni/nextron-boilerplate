@@ -1,8 +1,7 @@
-import type { IpcBridge } from "@main/preload";
-
+import type { IpcBridge } from "@main/preload"
 
 declare global {
-    interface Window {
-        ipcBridge: IpcBridge;
-    }
+	interface Window {
+		ipcBridge: IpcBridge
+	}
 }

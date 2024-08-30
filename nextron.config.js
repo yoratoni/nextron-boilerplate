@@ -1,5 +1,5 @@
 module.exports = {
-    mainSrcDir: "main",
-    rendererSrcDir: "renderer",
-    webpack: (config) => config
-};
+	mainSrcDir: "main",
+	rendererSrcDir: "renderer",
+	webpack: config => config,
+}

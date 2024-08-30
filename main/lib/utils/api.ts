@@ -1,4 +1,6 @@
-type Params = { [key: string]: any; };
+import type { IpcAny } from "@sharedTypes/ipc"
+
+type Params = { [key: string]: IpcAny }
 
 /**
  * Removes all query parameters from a URL.
@@ -6,7 +8,7 @@ type Params = { [key: string]: any; };
  * @returns The URL without query parameters.
  */
 export function removeQueryFromUrl(url: string): string {
-    return url.split("?")[0];
+	return url.split("?")[0]
 }
 
 /**
@@ -15,22 +17,22 @@ export function removeQueryFromUrl(url: string): string {
  * @returns The query parameters without the API route.
  */
 export function removeApiRouteFromQuery(params: Params): Params {
-    const newParams = { ...params };
-    const firstParamKey = Object.keys(newParams)[0];
+	const newParams = { ...params }
+	const firstParamKey = Object.keys(newParams)[0]
 
-    // No question mark === no query parameters
-    if (!firstParamKey.includes("?")) return {};
+	// No question mark === no query parameters
+	if (!firstParamKey.includes("?")) return {}
 
-    const firstParam = firstParamKey.split("?")[1];
-    const firstParamValue = newParams[firstParamKey];
+	const firstParam = firstParamKey.split("?")[1]
+	const firstParamValue = newParams[firstParamKey]
 
-    // Remove original first parameter
-    delete newParams[firstParamKey];
+	// Remove original first parameter
+	delete newParams[firstParamKey]
 
-    return {
-        [firstParam]: firstParamValue,
-        ...newParams
-    };
+	return {
+		[firstParam]: firstParamValue,
+		...newParams,
+	}
 }
 
 /**
@@ -39,8 +41,8 @@ export function removeApiRouteFromQuery(params: Params): Params {
  * @returns The parsed query parameters as an object.
  */
 export function parseQueryFromUrl(url: string): Params {
-    const urlParams = new URLSearchParams(url);
-    const rawParams = Object.fromEntries(urlParams.entries());
-    const params = removeApiRouteFromQuery(rawParams);
-    return params;
+	const urlParams = new URLSearchParams(url)
+	const rawParams = Object.fromEntries(urlParams.entries())
+	const params = removeApiRouteFromQuery(rawParams)
+	return params
 }
